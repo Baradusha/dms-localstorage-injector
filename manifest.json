@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "DMS LocalStorage Injector",
+  "version": "1.0",
+  "description": "Добавляет параметры в localStorage на вкладке https://dms.dar-dev.zone",
+  "permissions": ["activeTab", "storage", "scripting"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "host_permissions": ["https://dms.dar-dev.zone/*"]
+}

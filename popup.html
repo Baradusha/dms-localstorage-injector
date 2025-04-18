@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DMS LocalStorage Injector</title>
+    <style>
+      body {
+        width: 300px;
+        padding: 15px;
+        font-family: Arial, sans-serif;
+      }
+      .container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      select,
+      button {
+        width: 100%;
+        padding: 8px;
+        margin-bottom: 5px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+      select {
+        background-color: white;
+      }
+      button {
+        cursor: pointer;
+        border: none;
+        color: white;
+        background-color: #4caf50;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      .module-checkbox {
+        margin: 5px 0;
+        display: flex;
+        align-items: center;
+      }
+      .module-checkbox label {
+        margin-left: 5px;
+        flex-grow: 1;
+      }
+      .devtools-checkbox {
+        margin-bottom: 10px;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #ddd;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <select id="envSelect">
+        <option value="dev">dms.dar-dev.zone</option>
+        <option value="qa">dms.dar-qa.zone</option>
+      </select>
+
+      <div class="devtools-checkbox">
+        <input type="checkbox" id="devtoolsCheckbox" />
+        <label for="devtoolsCheckbox">DevTools</label>
+      </div>
+
+      <div id="modulesContainer">
+        <div class="module-checkbox">
+          <input type="checkbox" id="chatModule" value="@dar-dms/chat" />
+          <label for="chatModule">@dar-dms/chat</label>
+        </div>
+        <div class="module-checkbox">
+          <input type="checkbox" id="momsModule" value="@dar-dms/moms" />
+          <label for="momsModule">@dar-dms/moms</label>
+        </div>
+        <div class="module-checkbox">
+          <input type="checkbox" id="commsModule" value="@dar-dms/comms" />
+          <label for="commsModule">@dar-dms/comms</label>
+        </div>
+      </div>
+
+      <button id="applyBtn">Применить изменения</button>
+    </div>
+    <script src="utils.js"></script>
+    <script src="popup.js"></script>
+  </body>
+</html>
