@@ -15,7 +15,6 @@
         flex-direction: column;
         gap: 10px;
       }
-      select,
       button {
         width: 100%;
         padding: 8px;
@@ -23,11 +22,6 @@
         border: 1px solid #ddd;
         border-radius: 4px;
         font-size: 14px;
-      }
-      select {
-        background-color: white;
-      }
-      button {
         cursor: pointer;
         border: none;
         color: white;
@@ -50,14 +44,20 @@
         padding-bottom: 10px;
         border-bottom: 1px solid #ddd;
       }
+      .env-title {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 15px;
+        padding: 8px;
+        border-radius: 4px;
+        background-color: #f0f0f0;
+        text-align: center;
+      }
     </style>
   </head>
   <body>
     <div class="container">
-      <select id="envSelect">
-        <option value="dev">dms.dar-dev.zone</option>
-        <option value="qa">dms.dar-qa.zone</option>
-      </select>
+      <div id="envTitle" class="env-title">Окружение: определение...</div>
 
       <div class="devtools-checkbox">
         <input type="checkbox" id="devtoolsCheckbox" />
@@ -70,12 +70,32 @@
           <label for="chatModule">@dar-dms/chat</label>
         </div>
         <div class="module-checkbox">
-          <input type="checkbox" id="momsModule" value="@dar-dms/moms" />
-          <label for="momsModule">@dar-dms/moms</label>
+          <input type="checkbox" id="botModule" value="@dar-dms/bot" />
+          <label for="botModule">@dar-dms/bot</label>
+        </div>
+        <div class="module-checkbox">
+          <input
+            type="checkbox"
+            id="automationsModule"
+            value="@dar-dms/automations"
+          />
+          <label for="automationsModule">@dar-dms/automations</label>
         </div>
         <div class="module-checkbox">
           <input type="checkbox" id="commsModule" value="@dar-dms/comms" />
           <label for="commsModule">@dar-dms/comms</label>
+        </div>
+        <div class="module-checkbox">
+          <input type="checkbox" id="momsModule" value="@dar-dms/moms" />
+          <label for="momsModule">@dar-dms/moms</label>
+        </div>
+        <div class="module-checkbox">
+          <input type="checkbox" id="homeModule" value="@dar-dms/home" />
+          <label for="homeModule">@dar-dms/home</label>
+        </div>
+        <div class="module-checkbox">
+          <input type="checkbox" id="topbarModule" value="@dar-dms/topbar" />
+          <label for="topbarModule">@dar-dms/topbar</label>
         </div>
       </div>
 

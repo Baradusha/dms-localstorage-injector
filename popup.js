@@ -17,9 +17,20 @@ function isDevToolsChecked() {
   return document.getElementById("devtoolsCheckbox").checked;
 }
 
-function setEnvSelect(env) {
-  const envSelect = document.getElementById("envSelect");
-  envSelect.value = env;
+// Функция для установки текущего окружения в заголовке
+function setEnvTitle(env) {
+  const envTitle = document.getElementById("envTitle");
+  const envNames = {
+    dev: "dms.dar-dev.zone",
+    qa: "dms.dar-qa.zone",
+    "stage-qa": "stage-dms.dar-qa.zone",
+    "dar-io": "dms.dar.io",
+    "darlean-kz": "app.darlean.kz",
+    "darlean-eu": "app.darlean.eu",
+    "darlean-com": "app.darlean.com",
+  };
+
+  envTitle.textContent = `Окружение: ${envNames[env] || env}`;
 }
 
 function resetCheckboxes() {
@@ -39,9 +50,54 @@ function showNotAvailableMessage() {
       <ul style="list-style: none; padding: 0;">
         <li>• dms.dar-dev.zone</li>
         <li>• dms.dar-qa.zone</li>
+        <li>• stage-dms.dar-qa.zone</li>
+        <li>• dms.dar.io</li>
+        <li>• app.darlean.kz</li>
+        <li>• app.darlean.eu</li>
+        <li>• app.darlean.com</li>
       </ul>
     </div>
   `;
+}
+
+function getEnvironmentFromUrl(url) {
+  if (url.includes("dms.dar-dev.zone")) {
+    return "dev";
+  } else if (url.includes("stage-dms.dar-qa.zone")) {
+    return "stage-qa";
+  } else if (url.includes("dms.dar-qa.zone")) {
+    return "qa";
+  } else if (url.includes("dms.dar.io")) {
+    return "dar-io";
+  } else if (url.includes("app.darlean.kz")) {
+    return "darlean-kz";
+  } else if (url.includes("app.darlean.eu")) {
+    return "darlean-eu";
+  } else if (url.includes("app.darlean.com")) {
+    return "darlean-com";
+  }
+  return null;
+}
+
+function getUrlForEnvironment(env) {
+  switch (env) {
+    case "dev":
+      return "https://dms.dar-dev.zone";
+    case "qa":
+      return "https://dms.dar-qa.zone";
+    case "stage-qa":
+      return "https://stage-dms.dar-qa.zone";
+    case "dar-io":
+      return "https://dms.dar.io";
+    case "darlean-kz":
+      return "https://app.darlean.kz";
+    case "darlean-eu":
+      return "https://app.darlean.eu";
+    case "darlean-com":
+      return "https://app.darlean.com";
+    default:
+      return null;
+  }
 }
 
 async function updateCheckboxes() {
@@ -51,17 +107,12 @@ async function updateCheckboxes() {
       currentWindow: true,
     });
 
-    let env = null;
-    if (tab.url.includes("dms.dar-dev.zone")) {
-      env = "dev";
-    } else if (tab.url.includes("dms.dar-qa.zone")) {
-      env = "qa";
-    }
+    const env = getEnvironmentFromUrl(tab.url);
 
     resetCheckboxes();
 
     if (env) {
-      setEnvSelect(env);
+      setEnvTitle(env);
       const result = await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: () => {
@@ -119,27 +170,27 @@ async function executeAction(action) {
       currentWindow: true,
     });
 
-    const envSelect = document.getElementById("envSelect");
-    const selectedEnv = envSelect.value;
+    const env = getEnvironmentFromUrl(tab.url);
     const selectedModules = getSelectedModules();
     const devtoolsEnabled = isDevToolsChecked();
 
-    const envUrl =
-      selectedEnv === "dev"
-        ? "https://dms.dar-dev.zone"
-        : "https://dms.dar-qa.zone";
+    const envUrl = getUrlForEnvironment(env);
 
-    if (tab.url.includes(envUrl)) {
+    if (envUrl && tab.url.includes(envUrl)) {
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         func: (modules, devtools) => {
           const MODULE_URLS = {
             "@dar-dms/chat": "http://localhost:8080/dar-dms-chat.js",
-            "@dar-dms/moms": "http://localhost:4101/dar-dms-moms.js",
+            "@dar-dms/bot": "http://localhost:8081/dar-dms-bot.js",
+            "@dar-dms/automations":
+              "http://localhost:8082/dar-dms-automations.js",
             "@dar-dms/comms": "http://localhost:4200/dar-dms-comms.js",
+            "@dar-dms/moms": "http://localhost:4101/dar-dms-moms.js",
+            "@dar-dms/home": "http://localhost:4202/darlean-home.js",
+            "@dar-dms/topbar": "http://localhost:4209/dar-dms-topbar.js",
           };
 
-          // Удаляем все существующие override
           const currentOverrides = [];
           for (let i = 0; i < localStorage.length; i++) {
             const key = localStorage.key(i);
@@ -168,13 +219,9 @@ async function executeAction(action) {
       });
       await updateCheckboxes();
     } else {
-      alert(`Это расширение работает только на вкладке ${envUrl}.`);
+      alert(`Это расширение работает только на поддерживаемых окружениях.`);
     }
   } catch (err) {
     alert("Произошла ошибка при выполнении операции");
   }
 }
-
-document
-  .getElementById("envSelect")
-  .addEventListener("change", updateCheckboxes);
